@@ -2,7 +2,8 @@
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
-
+from urllib.error import HTTPError
+from googleapiclient.errors import HttpError
 
 class Cloud:
 
@@ -24,8 +25,9 @@ class Cloud:
     # define API service
     http = credentials.authorize(Http())
     self.drive = discovery.build('drive', 'v3', http=http)
+    self.topLevelDir = None
 
-  # define a function to retrieve all files
+  # TEST: define a function to retrieve all files
   def retrieve_all_files(self,api_service):
     results = []
     page_token = None
@@ -45,15 +47,40 @@ class Cloud:
       #if not page_token:
       #    break
 
-    except errors.HttpError as error:
+    except HttpError as error:
       print(f'An error has occurred: {error}')
     #    break
     # output the file metadata to console
     for oneFile in results:
       print(oneFile)
 
+  def dir_exists(self, api_service, name):
+    results = []
+    try:
+      param = {}
+      param['q'] = 'name=\'' + name + '\''
+      # param['q'] = 'parents = [] and name=\'' + name + '\''
+      param['fields'] = '*'
+
+      files = api_service.files().list(**param).execute()
+      # append the files from the current result page to our list
+      results.extend(files.get('files'))
+
+    except HttpError as error:
+      print(f'An error has occurred: {error}')
+    # output the file metadata to console
+    for oneFile in results:
+      # print(oneFile)
+      par = oneFile.get('parents')
+      if not par:
+          # print('This is it')
+          self.topLevelDir = oneFile
+      # print(oneFile.get('parents'))
+      
+
 
 if __name__ == '__main__':
   myCloud = Cloud()
-  myCloud.retrieve_all_files(myCloud.drive)
+  myCloud.dir_exists(myCloud.drive, '2023')
+  print(myCloud.topLevelDir)
   exit()        

@@ -1,0 +1,5 @@
+{
+	"credentials_file":"/opt/surveillance/credentials/credentials.json",
+	"client_secret_file":"/opt/surveillance/credentials/surveillance_client.json"
+}
+
