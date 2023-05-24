@@ -4,18 +4,23 @@ from httplib2 import Http
 from oauth2client import client, file, tools
 from urllib.error import HTTPError
 from googleapiclient.errors import HttpError
+import survprop
 
 class Cloud:
 
   # define path variables
-  credentials_file_path =  '/opt/surveillance/credentials/credentials.json'
-  clientsecret_file_path = '/opt/surveillance/credentials/surveillance_client.json'
+  # credentials_file_path =  '/opt/surveillance/credentials/credentials.json'
+  # clientsecret_file_path = '/opt/surveillance/credentials/surveillance_client.json'
+  credentials_file_path =  None
+  clientsecret_file_path = None
 
   # define API scope
   SCOPE = 'https://www.googleapis.com/auth/drive'
 
-  def __init__(self):  
+  def __init__(self, props):  
     # define store
+    self.credentials_file_path = props.credentials_file
+    self.clientsecret_file_path = props.client_secret_file
     store = file.Storage(self.credentials_file_path)
     credentials = store.get()
     # get access token
@@ -80,7 +85,8 @@ class Cloud:
 
 
 if __name__ == '__main__':
-  myCloud = Cloud()
+  myProps = survprop.SurvProp()
+  myCloud = Cloud(myProps)
   myCloud.dir_exists(myCloud.drive, '2023')
   print(myCloud.topLevelDir)
   exit()        
