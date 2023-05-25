@@ -59,13 +59,17 @@ class Cloud:
     for oneFile in results:
       print(oneFile)
 
+
+  # Check if a certain directory exists below a specified parent
+  # Return the ID if exixts, Or None
+  
   def dir_exists(self, api_service, parent_id, name):
+    return_id = None
     results = []
     try:
       param = {}
-      param['q'] = 'name=\'' + name + '\''
-      # param['q'] = 'parents = [] and name=\'' + name + '\''
-      param['fields'] = '*'
+      param['q'] = 'name=\'' + name + '\' and \'' + parent_id + '\' in parents and mimeType=\'application/vnd.google-apps.folder\''
+      # param['parents'] = [parent_id]
 
       files = api_service.files().list(**param).execute()
       # append the files from the current result page to our list
@@ -75,15 +79,30 @@ class Cloud:
       print(f'An error has occurred: {error}')
     # output the file metadata to console
     for oneFile in results:
+      return_id = oneFile['id']
       print(oneFile)
-      print('\n\n')
-      par = oneFile.get('parents')
-      print(f'Parents {par}')
-      if not par:
-          # print('This is it')
-          self.toplevel_dir = oneFile
-      # print(oneFile.get('parents'))
-      return self.toplevel_dir
+    return return_id
+
+  # Create a folder inside a specified folder.
+  # Return the ID of the newly created folder.
+  
+  def create_dir(self, api_service, parent_id, name):
+    return_id = None
+    results = []
+    try:
+      file_metadata = {
+        'name': name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': [parent_id]
+      }
+
+      file = api_service.files().create(body=file_metadata, fields='id').execute()
+      print(F'Folder ID: "{file.get("id")}".')
+      return_id = file.get('id')
+    except HttpError as error:
+      print(f'An error has occurred: {error}')
+    return return_id
+    
       
 
   def check_dir(self, api_service, id):
@@ -107,7 +126,8 @@ class Cloud:
 if __name__ == '__main__':
   myProps = survprop.SurvProp()
   myCloud = Cloud(myProps)
-  myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
+  surv_dir = myCloud.dir_exists(myCloud.drive, myProps.toplevel_folder_id, 'surveillance')
+  # test_dir = myCloud.create_dir(myCloud.drive, surv_dir, 'ABC123')
+  # myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
   # myCloud.toplevel_dir_exists(myCloud.drive, 'surveillance')
-  # print(myCloud.toplevel_dir)
-  exit()        
+  # print(myCloud.toplevel_dir)       
