@@ -5,6 +5,7 @@ class SurvProp:
     credentials_file = None
     client_secret_file = None
     toplevel_folder_id = None
+    surveillance_folder_name = None
 
     def __init__(self):
         with open(self.properties_file) as json_file:
@@ -12,9 +13,10 @@ class SurvProp:
             self.credentials_file = self.data['credentials_file']
             self.client_secret_file = self.data['client_secret_file']
             self.toplevel_folder_id = self.data['toplevel_folder_id']
+            self.surveillance_folder_name = self.data['surveillance_folder_name']
 
     def __str__(self):
-            return str(self.data)
+        return str(self.data)
         
 
 

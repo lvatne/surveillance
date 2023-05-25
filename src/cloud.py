@@ -126,7 +126,7 @@ class Cloud:
 if __name__ == '__main__':
   myProps = survprop.SurvProp()
   myCloud = Cloud(myProps)
-  surv_dir = myCloud.dir_exists(myCloud.drive, myProps.toplevel_folder_id, 'surveillance')
+  surv_dir = myCloud.dir_exists(myCloud.drive, myProps.toplevel_folder_id, myProps.surveillance_folder_name)
   # test_dir = myCloud.create_dir(myCloud.drive, surv_dir, 'ABC123')
   # myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
   # myCloud.toplevel_dir_exists(myCloud.drive, 'surveillance')
