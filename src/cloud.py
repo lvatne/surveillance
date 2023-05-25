@@ -13,7 +13,7 @@ class Cloud:
   # clientsecret_file_path = '/opt/surveillance/credentials/surveillance_client.json'
   credentials_file_path =  None
   clientsecret_file_path = None
-
+  toplevel_dir = None
   # define API scope
   SCOPE = 'https://www.googleapis.com/auth/drive'
 
@@ -59,7 +59,7 @@ class Cloud:
     for oneFile in results:
       print(oneFile)
 
-  def dir_exists(self, api_service, name):
+  def dir_exists(self, api_service, parent_id, name):
     results = []
     try:
       param = {}
@@ -75,18 +75,39 @@ class Cloud:
       print(f'An error has occurred: {error}')
     # output the file metadata to console
     for oneFile in results:
-      # print(oneFile)
+      print(oneFile)
+      print('\n\n')
       par = oneFile.get('parents')
+      print(f'Parents {par}')
       if not par:
           # print('This is it')
-          self.topLevelDir = oneFile
+          self.toplevel_dir = oneFile
       # print(oneFile.get('parents'))
+      return self.toplevel_dir
       
+
+  def check_dir(self, api_service, id):
+    results = []
+    try:
+      param = {}
+      param['fileId'] = id
+      # param['q'] = 'parents = [] and name=\'' + name + '\''
+      # param['fields'] = 'files(id, name)'
+
+      chk_file = api_service.files().get(**param).execute()
+      # append the files from the current result page to our list
+      # results.extend(files.get('files'))
+
+    except HttpError as error:
+      print(f'An error has occurred: {error}')
+    # output the file metadata to console
+    print(chk_file)
 
 
 if __name__ == '__main__':
   myProps = survprop.SurvProp()
   myCloud = Cloud(myProps)
-  myCloud.dir_exists(myCloud.drive, '2023')
-  print(myCloud.topLevelDir)
+  myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
+  # myCloud.toplevel_dir_exists(myCloud.drive, 'surveillance')
+  # print(myCloud.toplevel_dir)
   exit()        
