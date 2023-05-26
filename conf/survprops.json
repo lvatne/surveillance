@@ -2,6 +2,7 @@
 	"credentials_file":"/opt/surveillance/credentials/credentials.json",
 	"client_secret_file":"/opt/surveillance/credentials/surveillance_client.json",
 	"toplevel_folder_id":"0AH7Nv-s_Zsn3Uk9PVA",
+	"local_alarm_path":"/data/surveillance/alarms",
 	"surveillance_folder_name":"surveillance"
 }
 

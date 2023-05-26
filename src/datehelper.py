@@ -2,22 +2,25 @@ import datetime
 
 class DateHelper:
 
+    def __init__(self):
+        self.x = datetime.datetime.now()
     
     def year(self):
-        x = datetime.datetime.now()
-        return str(x.year)
+        return str(self.x.year)
 
     def month(self):
-        x = datetime.datetime.now()
-        return str(x.month) + '_' + x.strftime("%b")
+        return str(self.x.month) + '_' + self.x.strftime("%b")
 
     def day(self):
-        x = datetime.datetime.now()
-        return str(x.day) + '_' + x.strftime("%a")
+        return str(self.x.day) + '_' + self.x.strftime("%a")
 
+    def localdir(self):
+        dir = self.x.strftime("%Y%m%d")
+        return dir
         
 if __name__ == '__main__':
     dh = DateHelper()
+    print('Local dir ' + dh.localdir())
     print('Year ' + dh.year())
     print('Month ' + dh.month())
     print('Day ' + dh.day())
