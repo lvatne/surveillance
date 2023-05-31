@@ -3,6 +3,7 @@
 	"client_secret_file":"/opt/surveillance/credentials/surveillance_client.json",
 	"toplevel_folder_id":"17J-q_uyUxjfnEuNxa3TywC5sAuUZ52oS",
 	"local_alarm_path":"/data/surveillance/alarms",
-	"surveillance_folder_name":"surveillance"
+	"surveillance_folder_name":"surveillance",
+	"interval":"60"
 }
 

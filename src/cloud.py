@@ -67,7 +67,7 @@ class Cloud:
 
 
   # Check if a certain directory exists below a specified parent
-  # Return the ID if exixts, Or None
+  # Return the ID if exists, Or None
   
   def dir_exists(self, api_service, parent_id, name):
     return_id = None
@@ -141,7 +141,7 @@ class Cloud:
     except HttpError as error:
       print(f'An error has occurred: {error}')
     # output the file metadata to console
-    return chk_file
+    return chk_file['id']
 
   def share_file(self, file_id):
     permission1 = {
@@ -150,7 +150,6 @@ class Cloud:
         'emailAddress': 'lars.vatne@gmail.com',  # Please set your email of Google account.
     }
     self.drive.permissions().create(fileId=file_id, body=permission1).execute()
-    
 
 if __name__ == '__main__':
   myProps = survprop.SurvProp()

@@ -15,6 +15,7 @@ class SurvProp:
             self.toplevel_folder_id = self.data['toplevel_folder_id']
             self.surveillance_folder_name = self.data['surveillance_folder_name']
             self.local_alarm_path = self.data['local_alarm_path']
+            self.interval=int(self.data["interval"])
 
     def __str__(self):
         return str(self.data)
