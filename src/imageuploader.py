@@ -1,6 +1,10 @@
 import survprop
 import cloud
 import datehelper
+import localstorage
+import os
+import datetime as dt
+
 
 class ImageUploader:
 
@@ -25,8 +29,25 @@ class ImageUploader:
               day_dir = myCloud.create_dir(myCloud.drive, month_dir, dh.day())
       return day_dir
     
+
+  def find_localdir(self):
+    LS = localstorage.LocalStorage()
+    return LS.current_dir()
+  
     
 if __name__ == '__main__':
   uploader = ImageUploader()
   day_dir = uploader.establish_dir()
+  local_dir = uploader.find_localdir()
+  now = dt.datetime.now()
+  ago = now-dt.timedelta(minutes=600)
+
+  for root, dirs,files in os.walk(local_dir):  
+    for fname in files:
+        path = os.path.join(root, fname)
+        st = os.stat(path)    
+        mtime = dt.datetime.fromtimestamp(st.st_mtime)
+        if mtime > ago:
+            print('%s modified %s'%(path, mtime))
+  
   
