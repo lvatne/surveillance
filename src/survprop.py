@@ -14,6 +14,7 @@ class SurvProp:
             self.client_secret_file = self.data['client_secret_file']
             self.toplevel_folder_id = self.data['toplevel_folder_id']
             self.surveillance_folder_name = self.data['surveillance_folder_name']
+            self.local_alarm_path = self.data['local_alarm_path']
 
     def __str__(self):
         return str(self.data)
