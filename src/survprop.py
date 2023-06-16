@@ -16,6 +16,8 @@ class SurvProp:
             self.surveillance_folder_name = self.data['surveillance_folder_name']
             self.local_alarm_path = self.data['local_alarm_path']
             self.interval=int(self.data["interval"])
+            self.remote_retention_days=int(self.data["remote_retention_days"])
+            self.local_retention_days=int(self.data["local_retention_days"])
 
     def __str__(self):
         return str(self.data)

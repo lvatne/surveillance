@@ -51,6 +51,19 @@ class ImageUploader:
         return file
 
     
+  def upload_mpeg(self, filename, file, parent_id) :        
+        file_metadata = {'name': filename,
+                         'parents':[parent_id]
+                         }
+        media = MediaFileUpload(file, mimetype='video/mp4')
+        # pylint: disable=maybe-no-member
+        file = self.cloud.drive.files().create(body=file_metadata, media_body=media,
+                                      fields='id').execute()
+        file_id = file['id']
+        self.cloud.share_file(file_id)
+        print(file)
+        return file
+
 
   
     
@@ -67,7 +80,10 @@ if __name__ == '__main__':
         st = os.stat(path)    
         mtime = dt.datetime.fromtimestamp(st.st_mtime)
         if mtime > ago:
-            print('%s modified %s'%(path, mtime))
+          print('%s modified %s'%(path, mtime))
+          if fname.endswith('mp4'):
+            uploader.upload_mpeg(fname, path, day_dir)
+          else:
             uploader.upload_jpeg(fname, path, day_dir)
   
   

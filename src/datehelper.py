@@ -17,6 +17,10 @@ class DateHelper:
     def localdir(self):
         dir = self.x.strftime("%Y%m%d")
         return dir
+
+    def expirydate(self, retention_time):
+        exp_date = self.x - datetime.timedelta(days=retention_time)
+        return exp_date.strftime('%Y-%m-%dT%H:%M:%S')
         
 if __name__ == '__main__':
     dh = DateHelper()

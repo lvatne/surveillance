@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from urllib.error import HTTPError
 from googleapiclient.errors import HttpError
 import survprop
+import datehelper
 
 class Cloud:
 
@@ -46,6 +47,7 @@ class Cloud:
     # while True:
     try:
       param = {}
+      param['q'] = 'name=\'' + name + '\' and \'' + parent_id + '\' in parents and mimeType=\'application/vnd.google-apps.folder\''
 
       if page_token: param['pageToken'] = page_token
 
@@ -65,6 +67,48 @@ class Cloud:
     for oneFile in results:
       print(oneFile)
 
+
+  def delete_expired_jpegs(self, api_service, parent_id, retention_days):
+    results = []
+    page_token = None
+    dh = datehelper.DateHelper()
+    exp_date = dh.expirydate(retention_days)
+    print(f'Retention days {retention_days}, i.e. older than {exp_date}')
+    while True:
+      try:
+        param = {}
+        # param['q'] = 'mimetype=\'image/jpeg\' and createdTime < \'' + exp_date + '\' and \'' + parent_id + '\' in parents'
+        # param['q'] = '\'' + parent_id + '\' in parents'
+        param['q'] = 'createdTime < \'' + exp_date + '\' and mimeType=\'image/jpeg\''
+        param['pageSize'] = 1000
+        param['spaces'] = 'drive'
+
+        if page_token: param['pageToken'] = page_token
+
+        files = api_service.files().list(**param).execute()
+        # append the files from the current result page to our list
+        results.extend(files.get('files'))
+        # Google Drive API shows our files in multiple pages when the number of files exceed 100
+        page_token = files.get('nextPageToken')
+
+        if not page_token:
+          break
+
+      except HttpError as error:
+        print(f'An error has occurred: {error}')
+        break
+    # output the file metadata to console
+    for oneFile in results:
+      print(oneFile)
+      try:
+        delFile = None
+        delFile = api_service.files().get(fileId=oneFile['id']).execute()
+        if delFile:
+          api_service.files().delete(fileId=oneFile['id']).execute()
+      except HttpError as error:
+        print(f'An error has occurred: {error}. The file appears to not exist')
+      
+    
 
   # Check if a certain directory exists below a specified parent
   # Return the ID if exists, Or None
@@ -155,6 +199,10 @@ class Cloud:
 if __name__ == '__main__':
   myProps = survprop.SurvProp()
   myCloud = Cloud(myProps)
+  retention_days = myProps.remote_retention_days
+  parent_id = myProps.toplevel_folder_id
+  myCloud.dir_exists(myCloud.drive, parent_id, "2023")
+  myCloud.delete_expired_jpegs(myCloud.drive, parent_id, retention_days)
   # permission1 = {
   #        'type': 'user',
   #        'role': 'writer',
@@ -166,8 +214,8 @@ if __name__ == '__main__':
   #topDir = myCloud.create_toplevel_dir(myCloud.drive, 'ABC', 'surveillance')
   #print(topDir)
   # myCloud.retrieve_all_files(myCloud.drive)
-  surv_dir = myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
-  print(surv_dir)
+  # surv_dir = myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
+  # print(surv_dir)
   # test_dir = myCloud.create_dir(myCloud.drive, surv_dir, 'ABC123')
   # myCloud.check_dir(myCloud.drive, myProps.toplevel_folder_id)
   # myCloud.toplevel_dir_exists(myCloud.drive, 'surveillance')

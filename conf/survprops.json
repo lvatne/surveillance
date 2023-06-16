@@ -4,6 +4,8 @@
 	"toplevel_folder_id":"17J-q_uyUxjfnEuNxa3TywC5sAuUZ52oS",
 	"local_alarm_path":"/data/surveillance/alarms",
 	"surveillance_folder_name":"surveillance",
-	"interval":"60"
+	"interval":"61",
+	"remote_retention_days":"190",
+	"local_retention_days":"190"
 }
 
